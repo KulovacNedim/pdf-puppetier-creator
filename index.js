@@ -2,16 +2,28 @@ const express = require('express');
 const puppeteer = require('puppeteer');
 const app = express();
 
+const html = `<html>
+<body>
+<h1>My First Heading</h1>
+<p>My first paragraph.</p>
+</body>
+</html>`;
+
 async function printPDF() {
   const browser = await puppeteer.launch({
     headless: true,
+    args: [
+      '--disable-dev-shm-usage',
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+    ],
     ignoreDefaultArgs: ['--disable-extensions'],
   });
   const page = await browser.newPage();
-  await page.goto('https://blog.risingstack.com', {
-    waitUntil: 'networkidle0',
+  await page.setContent(html, {
+    waitUntil: 'domcontentloaded',
   });
-  const pdf = await page.pdf({ format: 'A4' });
+  const pdf = await page.pdf({ format: 'Letter', landscape: true });
 
   await browser.close();
   return pdf;
