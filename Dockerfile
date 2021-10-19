@@ -38,6 +38,6 @@ RUN npm install
 COPY . /usr/src/app
 
 EXPOSE 4000
-USER pptruser
+# USER pptruser
 
 CMD ["npm", "start"]
